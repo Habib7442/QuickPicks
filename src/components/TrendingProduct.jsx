@@ -9,7 +9,7 @@ const TrendingProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/trending`);
+        const response = await axios.get(`https://blue-lively-meerkat.cyclic.cloud/trending`);
         console.warn(response.data)
 
         setTrending(response.data);
