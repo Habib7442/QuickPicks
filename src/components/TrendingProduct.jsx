@@ -9,7 +9,7 @@ const TrendingProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://blue-lively-meerkat.cyclic.cloud/trending`);
+        const response = await axios.get(`https://quickpicks-backend-habib.onrender.com/trending`);
         console.warn(response.data)
 
         setTrending(response.data);

@@ -50,7 +50,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://blue-lively-meerkat.cyclic.cloud/categories`);
+        const response = await axios.get(`https://quickpicks-backend-habib.onrender.com/categories`);
         console.warn(response.data)
 
         setCategories(response.data);
