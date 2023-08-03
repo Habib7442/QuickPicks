@@ -45,12 +45,12 @@ const Navbar = () => {
             isMenuOpen ? "block" : "hidden"
           } md:flex md:space-x-4 md:w-auto mt-2 md:mt-0`}
         >
-          <a
-            href="#"
+          <Link
+            to="/"
             className="block text-black font-semibold hover:text-yellow-300 py-1 md:py-0"
           >
             Home
-          </a>
+          </Link>
           <a
             href="#"
             className="block text-black font-semibold hover:text-yellow-300 py-1 md:py-0"
