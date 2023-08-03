@@ -1,33 +1,24 @@
-import { Client, Databases } from "appwrite";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
-const client = new Client();
 
-client
-  .setEndpoint(import.meta.env.VITE_DATABASE_END_POINT)
-  .setProject(import.meta.env.VITE_DATABASE_PROJECT_ID);
 
 const TrendingProduct = () => {
   const [trending, setTrending] = useState([]);
 
   useEffect(() => {
-    const databases = new Databases(client);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/trending`);
+        console.warn(response.data)
 
-    let promise = databases.listDocuments(
-      import.meta.env.VITE_DATABASE_ID,
-      "64c878822bd13b727516"
-    );
-    promise.then(
-      function (response) {
-        console.log(response);
-        let fetchedProducts = response.documents;
-
-        setTrending(fetchedProducts);
-      },
-      function (error) {
-        console.log(error);
+        setTrending(response.data);
+      } catch (error) {
+        console.error(error);
       }
-    );
+    };
+
+    fetchData();
   }, []);
   return (
     <>

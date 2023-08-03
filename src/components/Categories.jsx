@@ -1,13 +1,7 @@
-import  { useEffect, useState } from "react";
-import { Client, Databases } from "appwrite";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-
-const client = new Client();
-
-client
-  .setEndpoint(import.meta.env.VITE_DATABASE_END_POINT)
-  .setProject(import.meta.env.VITE_DATABASE_PROJECT_ID);
+import axios from "axios";
 
 const CategoryItem = ({ name, image }) => {
   const navigate = useNavigate();
@@ -51,24 +45,21 @@ const CategoryItem = ({ name, image }) => {
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  // console.warn(categories)
 
   useEffect(() => {
-    const databases = new Databases(client);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/categories`);
+        console.warn(response.data)
 
-    let promise = databases.listDocuments(
-      import.meta.env.VITE_DATABASE_ID,
-      import.meta.env.VITE_DATABASE_CATEGORIES_COLLECTION_ID
-    );
-
-    promise.then(
-      function (response) {
-        console.log(response);
-        setCategories(response.documents);
-      },
-      function (error) {
-        console.log(error);
+        setCategories(response.data);
+      } catch (error) {
+        console.error(error);
       }
-    );
+    };
+
+    fetchData();
   }, []);
 
   return (
