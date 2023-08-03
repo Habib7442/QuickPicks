@@ -1,61 +1,35 @@
 import { useEffect, useState } from "react";
-import { Client, Databases } from "appwrite";
 import { useParams } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
-import SearchIcon from '@mui/icons-material/Search';
-
-const client = new Client();
-
-client
-  .setEndpoint(import.meta.env.VITE_DATABASE_END_POINT)
-  .setProject(import.meta.env.VITE_DATABASE_PROJECT_ID);
+import SearchIcon from "@mui/icons-material/Search";
+import axios from "axios";
 
 const Products = () => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
+  console.warn(products);
 
-  
+  useEffect(() => {
+    // Fetch products data from the backend API based on the category
+    axios
+      .get(`https://quickpicks-backend-habib.onrender.com/products/${category}`)
+      .then((response) => {
+        setProducts(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  }, [category]);
+
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
   };
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const databases = new Databases(client);
-
-    let promise = databases.listDocuments(
-      import.meta.env.VITE_DATABASE_ID,
-      getCategoryCollectionId(category)
-    );
-    promise.then(
-      function (response) {
-        console.log(response);
-        let fetchedProducts = response.documents;
-
-        switch (sortBy) {
-          case "priceLowToHigh":
-            fetchedProducts.sort((a, b) => a.price - b.price);
-            break;
-          case "priceHighToLow":
-            fetchedProducts.sort((a, b) => b.price - a.price);
-            break;
-          default:
-            // No need to sort in the default case
-            break;
-        }
-
-        setProducts(fetchedProducts);
-      },
-      function (error) {
-        console.log(error);
-      }
-    );
-  }, [category, sortBy]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -65,26 +39,6 @@ const Products = () => {
     const productName = product.name.toLowerCase();
     return productName.includes(searchQuery.toLowerCase());
   });
-
-  // Helper function to get collection ID based on category
-  const getCategoryCollectionId = (category) => {
-    switch (category) {
-      case "men":
-        return "64c69d9b817ebc3f7f85";
-      case "women":
-        return "64c69e62acf19d74f0e1";
-      case "beauty & skin care":
-        return "64c7a00d89498b8392e3";
-      case "kids":
-        return "64c8de092f43ff73b8e3";
-      case "fitness & gym":
-        return "64c8e2271ea764980290";
-      case "electronics":
-        return "64c8f4e09b166b3dfdeb";
-      default:
-        return ""; // Return default collection ID
-    }
-  };
 
   const handleViewProduct = (product) => {
     const { img, name, category, price } = product;
@@ -120,7 +74,10 @@ const Products = () => {
         <h2 className="text-3xl font-bold mb-4 text-center">Products</h2>
         <div className="relative mb-4">
           <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-           <SearchIcon className="h-5 w-5 text-gray-400 ml-2" aria-hidden="true" />
+            <SearchIcon
+              className="h-5 w-5 text-gray-400 ml-2"
+              aria-hidden="true"
+            />
           </div>
           <input
             type="text"

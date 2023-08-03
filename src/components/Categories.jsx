@@ -51,7 +51,6 @@ const Categories = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`https://quickpicks-backend-habib.onrender.com/categories`);
-        console.warn(response.data)
 
         setCategories(response.data);
       } catch (error) {
