@@ -11,10 +11,8 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
-  console.warn(products);
 
   useEffect(() => {
-    // Fetch products data from the backend API based on the category
     axios
       .get(`https://quickpicks-backend-habib.onrender.com/products/${category}`)
       .then((response) => {
@@ -40,6 +38,14 @@ const Products = () => {
     return productName.includes(searchQuery.toLowerCase());
   });
 
+  const sortedProducts = [...filteredProducts];
+
+  if (sortBy === "priceLowToHigh") {
+    sortedProducts.sort((a, b) => a.price - b.price);
+  } else if (sortBy === "priceHighToLow") {
+    sortedProducts.sort((a, b) => b.price - a.price);
+  }
+
   const handleViewProduct = (product) => {
     const { img, name, category, price } = product;
     navigate(`/product/${name}`, {
@@ -54,7 +60,6 @@ const Products = () => {
 
   return (
     <div className="flex flex-col md:flex-row justify-center bg-gray-100 py-8">
-      {/* Left part with filters */}
       <div className="w-full md:w-1/4 p-4 rounded-lg md:mr-4 mb-4 md:mb-0">
         <h3 className="text-lg font-semibold mb-3">Sort by:</h3>
         <select
@@ -66,10 +71,8 @@ const Products = () => {
           <option value="priceLowToHigh">Price: Low to High</option>
           <option value="priceHighToLow">Price: High to Low</option>
         </select>
-        {/* Add more filter options if needed */}
       </div>
 
-      {/* Right part with products list */}
       <div className="w-full md:w-3/4 p-4 gap-4">
         <h2 className="text-3xl font-bold mb-4 text-center">Products</h2>
         <div className="relative mb-4">
@@ -90,7 +93,7 @@ const Products = () => {
         <section className="text-gray-600 body-font gap-4">
           <div className="container px-2 md:px-5 mx-auto">
             <div className="flex flex-wrap gap-4 justify-center">
-              {filteredProducts.map((product) => (
+              {sortedProducts.map((product) => (
                 <ProductCard
                   key={uuidv4()}
                   img={product.img}
